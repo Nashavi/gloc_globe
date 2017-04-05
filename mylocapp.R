@@ -19,7 +19,7 @@ shinyApp(
     #                        tags$p("The Circle Markers indicate population increase"),tags$p("The Colors indicate the pop. growth in percentages"))
     ),
   server = function(input, output) {
-    load("myloc2.Rdata")
+    load("myloc3.Rdata")
     #earth <- system.file("images/world.jpg", package="threejs")
     
     bgcolor <- "#000025"
@@ -30,15 +30,11 @@ shinyApp(
     
     col <- rep("black",length(wrld_simpl$NAME))    # Set a default country color
     
-    points = data.frame(lon=ds$lon, lat=ds$lat)
-    pointsSP = SpatialPoints(points, proj4string=CRS(proj4string(wrld_simpl)))  
-    indices = over(pointsSP, wrld_simpl)
-    ctry_list = unique(indices$NAME,na.rm=T)
-    
-    col[wrld_simpl$NAME %in% ctry_list] <- "#003344"    # Highlight countries visited
+    col[wrld_simpl$NAME %in% unique(ds$ctry,na.rm=T)] <- "#003344"    # Highlight countries visited
     
     
-    plot(wrld_simpl, col=col,          bg=bgcolor, border="#111111", ann=FALSE,  axes=FALSE, 
+    plot(wrld_simpl, col=col,
+         bg=bgcolor, border="#111111", ann=FALSE,  axes=FALSE, 
          xpd=FALSE,  xlim=c(-180,180), ylim=c(-90,90),  setParUsrBB=TRUE)
     
     graphics.off()
@@ -50,8 +46,7 @@ shinyApp(
     
     
     output$GlobeOut <- renderGlobe({
-      args <- c(earth, list(lat=ds[,1], long=ds[,2], arcs=ds, val = .3,
-                            arcsHeight=0.3, arcsLwd=2, arcsColor="#ffff00", arcsOpacity=0.15, atmosphere=TRUE))
+      args <- c(earth, list(lat=ds[,1], long=ds[,2], arcs=ds[,c(2,3,8,9)], value = ds[,7]/max(ds[,7]), arcsHeight=0.3, arcsLwd=2, arcsColor="#ffff00", arcsOpacity=0.15, atmosphere=TRUE))
       do.call(globejs, args=args)
     })
   })
