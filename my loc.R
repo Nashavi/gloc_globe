@@ -1,4 +1,4 @@
-setwd("~/Documents/UCD/BA Prac/Google loc/Takeout/Location History")
+setwd("~/Documents/UCD/BA Prac/gloc_globe")
 library(jsonlite)
 require(dplyr)
 devtools::install_github("bwlewis/rthreejs")
