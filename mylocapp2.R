@@ -20,6 +20,8 @@ shinyApp(
     ),
   server = function(input, output) {
     load("myloc3.Rdata")
+    
+    ds<-data.frame(ds)
     #earth <- system.file("images/world.jpg", package="threejs")
     
     bgcolor <- "#000025"
@@ -30,8 +32,7 @@ shinyApp(
     
     col <- rep("black",length(wrld_simpl$NAME))    # Set a default country color
     
-    col[wrld_simpl$NAME %in% unique(ds$ctry,na.rm=T)] <- "#003344"    # Highlight countries visited
-    
+   col[wrld_simpl$NAME %in% unique(ds$ctry,na.rm=T)] <- "#003344"    # Highlight countries visited
     
     plot(wrld_simpl, col=col,
          bg=bgcolor, border="#111111", ann=FALSE,  axes=FALSE, 
@@ -39,15 +40,10 @@ shinyApp(
     
     graphics.off()
     
-    # bgcolor <- "#000025"
-    # earth <- tempfile(fileext=".jpg")
-    # jpeg(earth, width=2048, height=1024, quality=100, bg=bgcolor, antialias="default")
-    # par(mar = c(0,0,0,0), pin = c(4,2), pty = "m", xaxs = "i", xaxt = "n", xpd = FALSE, yaxs = "i", yaxt = "n")
-    
     ds<- ds[,c(2,3,8,9,1,7)]
     
     output$GlobeOut <- renderGlobe({
-      args <- c(earth, list(lat=ds[,1], long=ds[,2], arcs=ds[,c(1:4)], value = 100*ds[,6]/max(ds[,6]), arcsHeight=0.3, arcsLwd=2, arcsColor="#ffff00", arcsOpacity=0.15, atmosphere=TRUE))
+      args <- c(earth, list(lat=ds[,1], long=ds[,2], arcs=ds[,c(1:4)], value = (8*ds[,6])^(5/8), color= "white", arcsHeight=0.3, arcsLwd=4, arcsColor="#ffff00", arcsOpacity=0.25, atmosphere=TRUE))
       do.call(globejs, args=args)
     })
   })
